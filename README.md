@@ -1,10 +1,10 @@
 # Blacklite - Bold Override (Chrome Extension)
 
 A Manifest V3 Chrome extension that adds a toolbar button next to the
-address bar. Clicking it toggles a style override that disables bold
-text (`font-weight: normal !important`) on the **current site**.
-Google sites (google.com, Gmail, YouTube, and regional Google domains)
-are always excluded and the button is disabled on them.
+address bar. Clicking it toggles a style override that forces bold
+text (`font-weight: bold !important`) on the **current site**, applied
+to `<body>`. Google sites (google.com, Gmail, YouTube, and regional
+Google domains) are always excluded and the button is disabled on them.
 
 > **Why Manifest V3?** Chrome fully disabled Manifest V2 extensions
 > starting with Chrome 138 (July 2025) and removed remaining MV2
@@ -22,11 +22,11 @@ are always excluded and the button is disabled on them.
   the override is **off**, as a reminder), and messages the content
   script (falling back to `chrome.scripting.executeScript` if the
   content script isn't present yet).
-- `content.js` - Applies/removes the `blacklite-no-bold` class on
-  `<html>` based on stored state and on messages from the background
+- `content.js` - Applies/removes the `blacklite-bold-active` class on
+  `<body>` based on stored state and on messages from the background
   script.
 - `override.css` - CSS rule scoped to
-  `html.blacklite-no-bold` that forces normal font weight everywhere.
+  `body.blacklite-bold-active` that forces bold font weight everywhere.
 - `icons/` - Toolbar/store icons (32/48/128 px), scaled down from
   `D:\github\BlackIncNano\src\BlackIncNano.png`.
 
@@ -41,10 +41,11 @@ page reloads and browser restarts, independent of other sites.
    (`D:\azure\blacklite-new`).
 4. Pin the "Blacklite - Bold Override" icon to the toolbar if desired.
 5. Visit any non-Google site and click the icon to toggle the bold
-   override. The badge shows "ON" while the override is **off** (as a
-   reminder that bold text is still showing normally); it clears once
-   you click to turn the override on. The button is disabled (greyed
-   out) on Google sites.
+   override. Activating it adds bold styling to all text on the page;
+   deactivating it removes that styling. The badge shows "ON" while
+   the override is **off** (as a reminder that text is not currently
+   forced bold); it clears once you click to turn the override on.
+   The button is disabled (greyed out) on Google sites.
 
 ## Notes / next steps
 

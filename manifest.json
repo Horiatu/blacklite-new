@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Blacklite \u2013 Bold Override",
   "version": "1.0.0",
-  "description": "Adds a toolbar button next to the address bar that toggles a style override disabling bold text on the current site. Google sites are excluded.",
+  "description": "Adds a toolbar button next to the address bar that toggles a style override forcing bold text on the current site. Google sites are excluded.",
   "icons": {
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
