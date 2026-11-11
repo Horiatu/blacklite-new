@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Blacklite \u2013 Bold Override",
+  "version": "1.0.0",
+  "description": "Adds a toolbar button next to the address bar that toggles a style override disabling bold text on the current site. Google sites are excluded.",
+  "icons": {
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Toggle bold override",
+    "default_icon": {
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "*://*.google.com/*",
+        "*://*.google.co.uk/*",
+        "*://*.google.ca/*",
+        "*://*.google.de/*",
+        "*://*.google.fr/*",
+        "*://*.google.es/*",
+        "*://*.google.it/*",
+        "*://*.google.co.jp/*",
+        "*://*.google.co.in/*",
+        "*://*.google.com.au/*",
+        "*://*.youtube.com/*",
+        "*://*.gmail.com/*"
+      ],
+      "css": ["override.css"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}
