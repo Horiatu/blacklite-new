@@ -1,8 +1,8 @@
 /*
- * Overrides bold text styling on the page whenever the <html> root
- * element has the "blacklite-no-bold" class applied by content.js.
+ * Forces bold text on the page whenever <body> has the
+ * "blacklite-bold-active" class applied by content.js.
  */
-html.blacklite-no-bold,
-html.blacklite-no-bold * {
-  font-weight: normal !important;
+body.blacklite-bold-active,
+body.blacklite-bold-active * {
+  font-weight: bold !important;
 }

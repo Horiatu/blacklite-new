@@ -4,7 +4,7 @@
  * toolbar action's badge/enabled-state in sync with the active tab.
  */
 
-const TOGGLE_CLASS = "blacklite-no-bold";
+const TOGGLE_CLASS = "blacklite-bold-active";
 const BADGE_COLOR = "#1a73e8";
 // Matches google.com, google.co.uk, google.de, etc. so the extension never
 // activates on Google's own properties.
@@ -72,7 +72,7 @@ chrome.action.onClicked.addListener(async (tab) => {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id, allFrames: true },
       func: (className, active) => {
-        document.documentElement.classList.toggle(className, active);
+        document.body.classList.toggle(className, active);
       },
       args: [TOGGLE_CLASS, nextActive],
     });

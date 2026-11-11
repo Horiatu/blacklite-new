@@ -1,12 +1,12 @@
 /*
  * Blacklite content script.
- * Applies/removes the bold-override class on <html> based on the
+ * Applies/removes the bold-active class on <body> based on the
  * per-site state stored in chrome.storage.local, and reacts to
  * toggle messages sent from the background service worker.
  */
 
 (() => {
-  const TOGGLE_CLASS = "blacklite-no-bold";
+  const TOGGLE_CLASS = "blacklite-bold-active";
   const GOOGLE_HOST_PATTERN = /(^|\.)google\.[a-z.]{2,}$/i;
 
   // Safety net in case this ever runs on a Google host (e.g. redirects).
@@ -15,7 +15,17 @@
   }
 
   function applyState(active) {
-    document.documentElement.classList.toggle(TOGGLE_CLASS, active);
+    // The script runs at document_start, so <body> may not exist yet;
+    // wait for it before toggling the class.
+    if (document.body) {
+      document.body.classList.toggle(TOGGLE_CLASS, active);
+    } else {
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => document.body.classList.toggle(TOGGLE_CLASS, active),
+        { once: true }
+      );
+    }
   }
 
   const hostname = location.hostname;
