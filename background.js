@@ -43,6 +43,24 @@ async function updateActionForTab(tabId, url) {
   await chrome.action.setBadgeText({ tabId, text: active ? "" : "ON" });
 }
 
+// Re-applies updateActionForTab to every open tab whose hostname's stored
+// state just changed, so all tabs on that site (not just the one that
+// triggered the change) stay in sync with chrome.storage.
+async function syncTabsForHosts(hostnames) {
+  const tabs = await chrome.tabs.query({});
+  await Promise.all(
+    tabs.map((tab) => {
+      if (tab.id === undefined || !isTogglableUrl(tab.url)) {
+        return undefined;
+      }
+      if (!hostnames.has(new URL(tab.url).hostname)) {
+        return undefined;
+      }
+      return updateActionForTab(tab.id, tab.url);
+    })
+  );
+}
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete") {
     updateActionForTab(tabId, tab.url);
@@ -54,6 +72,16 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   updateActionForTab(tabId, tab.url);
 });
 
+// Whenever a site's stored toggle state changes (from a click, another
+// tab, or any other writer), re-sync every open tab for that site via
+// updateActionForTab so the badge never drifts from chrome.storage.
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local") {
+    return;
+  }
+  syncTabsForHosts(new Set(Object.keys(changes)));
+});
+
 chrome.action.onClicked.addListener(async (tab) => {
   if (!isTogglableUrl(tab.url)) {
     return;
@@ -62,7 +90,7 @@ chrome.action.onClicked.addListener(async (tab) => {
   const hostname = new URL(tab.url).hostname;
   const nextActive = !(await getActiveState(hostname));
   await chrome.storage.local.set({ [hostname]: nextActive });
-  await chrome.action.setBadgeText({ tabId: tab.id, text: nextActive ? "" : "ON" });
+  // Badge updates are handled by the storage.onChanged listener above.
 
   try {
     await chrome.tabs.sendMessage(tab.id, { type: "BLACKLITE_TOGGLE", active: nextActive });
