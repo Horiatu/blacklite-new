@@ -31,7 +31,7 @@ async function getActiveState(hostname) {
 async function updateActionForTab(tabId, url) {
  if (!isTogglableUrl(url)) {
     await chrome.action.disable(tabId);
-    await chrome.action.setBadgeText({ tabId, text: "" });
+    await chrome.action.setBadgeText({ tabId, text: "X" });
     return;
   }
 
