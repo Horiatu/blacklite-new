@@ -30,7 +30,7 @@ async function getActiveState(hostname) {
 async function updateActionForTab(tabId, url) {
  if (!isTogglableUrl(url)) {
     await chrome.action.disable(tabId);
-    await chrome.action.setBadgeText({ tabId, text: "" });
+    await chrome.action.setBadgeText({ tabId, text: "X" });
     return;
   }
 
@@ -40,7 +40,7 @@ async function updateActionForTab(tabId, url) {
   await chrome.action.setBadgeBackgroundColor({ tabId, color: BADGE_COLOR });
   // Badge shows "ON" when the override is OFF, so it only appears as a
   // reminder while bold text is still showing normally on the page.
-  await chrome.action.setBadgeText({ tabId, text: active ? "" : "ON" });
+  await chrome.action.setBadgeText({ tabId, text: active ? "ON" : "" });
 }
 
 // Re-applies updateActionForTab to every open tab whose hostname's stored

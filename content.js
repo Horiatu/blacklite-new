@@ -17,7 +17,6 @@
   function applyState(active) {
     // The script runs at document_start, so <body> may not exist yet;
     // wait for it before toggling the class.
-    alert(`applyState called with active: ${active}`);
     if (document.body) {
       document.body.classList.toggle(TOGGLE_CLASS, active);
     } else {
