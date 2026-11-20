@@ -23,7 +23,6 @@ function isTogglableUrl(url) {
 }
 
 async function getActiveState(hostname) {
-  debugger;
   const result = await chrome.storage.local.get(hostname);
   return Boolean(result[hostname]);
 }
@@ -36,7 +35,7 @@ async function updateActionForTab(tabId, url) {
   }
 
   await chrome.action.enable(tabId);
-  const hostname = new URL(url).hostname;
+  const hostname = new URL(url).toString();
   const active = await getActiveState(hostname);
   await chrome.action.setBadgeBackgroundColor({ tabId, color: BADGE_COLOR });
   // Badge shows "ON" when the override is OFF, so it only appears as a
@@ -54,7 +53,7 @@ async function syncTabsForHosts(hostnames) {
       if (tab.id === undefined || !isTogglableUrl(tab.url)) {
         return undefined;
       }
-      if (!hostnames.has(new URL(tab.url).hostname)) {
+      if (!hostnames.has(new URL(tab.url).toString())) {
         return undefined;
       }
       return updateActionForTab(tab.id, tab.url);
@@ -88,9 +87,13 @@ chrome.action.onClicked.addListener(async (tab) => {
     return;
   }
 
-  const hostname = new URL(tab.url).hostname;
+  const hostname = new URL(tab.url).toString();
   const nextActive = !(await getActiveState(hostname));
-  await chrome.storage.local.set({ [hostname]: nextActive });
+  if(nextActive) {
+    await chrome.storage.local.set({ [hostname]: nextActive });
+  } else {
+    await chrome.storage.local.remove([hostname]);
+  }
   // Badge updates are handled by the storage.onChanged listener above.
 
   try {
