@@ -28,7 +28,6 @@ async function getActiveState(hostname) {
 }
 
 async function updateActionForTab(tabId, url) {
-  debugger;
  if (!isTogglableUrl(url)) {
     await chrome.action.disable(tabId);
     await chrome.action.setBadgeText({ tabId, text: "X" });
@@ -90,7 +89,11 @@ chrome.action.onClicked.addListener(async (tab) => {
 
   const hostname = new URL(tab.url).toString();
   const nextActive = !(await getActiveState(hostname));
-  await chrome.storage.local.set({ [hostname]: nextActive });
+  if(nextActive) {
+    await chrome.storage.local.set({ [hostname]: nextActive });
+  } else {
+    await chrome.storage.local.remove([hostname]);
+  }
   // Badge updates are handled by the storage.onChanged listener above.
 
   try {
